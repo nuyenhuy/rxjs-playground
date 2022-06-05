@@ -1,10 +1,20 @@
-import { Observable } from 'rxjs';
+import {BehaviorSubject, filter, interval, Observable, take, takeUntil} from 'rxjs';
+// takeUntil
+const _stop: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+const stop$ = _stop.asObservable().pipe(filter((v) => v != null));
 
-const someObservable$ = new Observable<string>(subscriber => {
-  subscriber.next('Alice');
-  subscriber.next('Ben');
-  subscriber.next('Charlie');
-  subscriber.complete();
-});
+const now$ = interval(1000).pipe(
+    takeUntil(stop$)
+).subscribe(value => console.log(value))
 
-someObservable$.subscribe(value => console.log(value));
+setTimeout(() => {
+    _stop.next("stop");
+}, 10000);
+
+// throttle/throttleTime
+
+
+
+
+
+
